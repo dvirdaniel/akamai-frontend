@@ -6,7 +6,7 @@ The following assumptions made in the development process:
 1. Used [Angular Material]([https://github.com/angular/angular-cli](https://material.angular.io/components/categories))
 2. Created FileModel class to represent each file from the server response
 3. Created input component to get user search input
-4. Created tree-view component to display search results
+4. Created tree-view component to display search results (display each file by his name and path by Tooltip)
 5. Created Cache service to save results by prefixes entered by the user and also use it to comunicate between the 2 components created above
 6. Created Data service for getting results from the server (assummed running from: http://localhost:8080 - can be changed on environment.ts file)
 
