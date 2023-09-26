@@ -15,7 +15,6 @@ The following assumptions made in the development process:
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.2.
 
 On the project directory run `npm install` for installing needed dependencies.
-
 Afterwards, run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
