@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, take, pipe } from 'rxjs';
 import { FileModel } from '../model/file-model';
 import { DataService } from './data.service';
 
@@ -11,9 +11,16 @@ export class CacheService {
   private cache: Map<string, FileModel[]> = new Map();
   private prefixSubject = new BehaviorSubject<string>('');
   private dataSubject = new BehaviorSubject<FileModel[]>([]);
+  private prefixSubscription: Subscription | undefined;
 
   constructor(private dataService: DataService) {
-    this.updateData();
+    this.onPrefixUpdate();
+  }
+
+  public prefixUnsubscribe() {
+    if (this.prefixSubscription) {
+      this.prefixSubscription.unsubscribe();
+    }
   }
 
   public updatePrefix(prefix: string) {
@@ -24,8 +31,8 @@ export class CacheService {
     this.cache.clear();
   }
 
-  private updateData() {
-    this.prefixSubject.subscribe( (prefix: string) => {
+  private onPrefixUpdate() {
+    this.prefixSubscription = this.prefixSubject.subscribe( (prefix: string) => {
       this.initData(prefix);
     });
   }
@@ -43,13 +50,13 @@ export class CacheService {
         }
       } else {
         const data$ = this.dataService.getDataFromServer(prefix);
-        data$.subscribe( (data: any) => {
+        data$.pipe(take(1)).subscribe( (data: any) => {
           this.cache.set(prefix, data);
           this.dataSubject.next(data);
         });
       }
     } else {
-      this.dataService.getDataFromServer().subscribe( (data: FileModel[]) => this.dataSubject.next(data) );
+      this.dataService.getDataFromServer().pipe(take(1)).subscribe( (data: FileModel[]) => this.dataSubject.next(data) );
     }
   }
 }

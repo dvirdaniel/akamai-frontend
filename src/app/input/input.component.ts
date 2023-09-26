@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,14 +13,14 @@ import { debounceTime } from 'rxjs/operators';
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
 })
-export class InputComponent implements OnInit {
+export class InputComponent implements OnInit, OnDestroy {
 
   searchInput = new FormControl();
 
   constructor(private cacheService: CacheService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     // Debounce user input with a 300ms delay
     this.searchInput.valueChanges.pipe(
@@ -28,6 +28,10 @@ export class InputComponent implements OnInit {
     ).subscribe((searchText: string) => {
       this.cacheService.updatePrefix(searchText);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.cacheService.prefixUnsubscribe();
   }
 
 }
